@@ -67,7 +67,6 @@ def check_and_process():
     take_request["type"] = "transcribe"
     take_request["worker"] = WORKER
     response = requests.post(f"{APIURL}tasks/take/", json=take_request)
-    print(response)
     if response.status_code != 200:
         return False
     task = response.json()
@@ -75,7 +74,6 @@ def check_and_process():
     print(json.dumps(task, indent=2))
 
     file_response = requests.get(f"{APIURL}tasks/file/{taskid}")
-    print(file_response)
     local_file_path = os.path.join(LOCAL_FILE_PATH, taskid)
     with open(local_file_path, 'wb') as file:
         file.write(file_response.content)
@@ -92,6 +90,7 @@ def check_and_process():
     print(json.dumps(result_to_report, indent=2))
     print("Reporting result")
     requests.post(f"{APIURL}tasks/complete/{taskid}/", json=result_to_report)
+    os.remove(local_file_path)
     print("Done")
     return True
 
