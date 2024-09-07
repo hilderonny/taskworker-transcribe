@@ -7,7 +7,7 @@ import argparse
 import os
 
 REPOSITORY = "https://github.com/hilderonny/taskworker-transcribe"
-VERSION = "1.2.0"
+VERSION = "1.0.0"
 LIBRARY = "faster-whisper-" + version("faster-whisper")
 DEVICE = "cuda"
 APIVERSION = "v2"
@@ -51,7 +51,7 @@ def process_file(file_path):
         print("Processing file " + file_path)
         print("Transcribing")
         transcribe_segments_generator, transcribe_info = whisper_model.transcribe(file_path, task = "transcribe")
-        transcribe_segments = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text }, transcribe_segments_generator))
+        transcribe_segments = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text.strip() }, transcribe_segments_generator))
         original_language = transcribe_info.language
         result["language"] = original_language
         result["texts"] = transcribe_segments
@@ -81,10 +81,7 @@ def check_and_process():
         file.write(file_response.content)
 
     result_to_report = {}
-    result_to_report["result"] = {}
-    result_to_report["result"]["texts"] = process_file(local_file_path)
-
-    result_to_report["result"]["language"] = None
+    result_to_report["result"] = process_file(local_file_path)
     end_time = datetime.datetime.now()
     result_to_report["result"]["device"] = DEVICE
     result_to_report["result"]["duration"] = (end_time - start_time).total_seconds()
