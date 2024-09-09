@@ -64,7 +64,7 @@ Next you need to copy `cudnn_ops_infer64_8.dll`, `cudnn_cnn_infer64_8.dll`, `cub
 sudo apt install -y git python3.11-env ocl-icd-libopencl1 nvidia-cuda-toolkit nvidia-utils-510-server nvidia-utils-535-server
 python3.11 -m venv python-venv
 source python-venv/bin/activate
-pip install faster-whisper==0.9.0
+pip install faster-whisper==0.9.0 nvidia_cublas_cu11==11.11.3.6 nvidia_cudnn_cu11==9.4.0.58
 ```
 
 Adopt the shell script `translate.sh`to your needs and create SystemD config files (if you want tu run the worker as Linux service).
