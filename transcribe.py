@@ -9,7 +9,6 @@ import os
 REPOSITORY = "https://github.com/hilderonny/taskworker-transcribe"
 VERSION = "1.0.0"
 LIBRARY = "faster-whisper-" + version("faster-whisper")
-DEVICE = "cuda"
 APIVERSION = "v2"
 LOCAL_MODEL_PATH = "./models/faster-whisper"
 LOCAL_FILE_PATH = "./temp"
@@ -19,6 +18,7 @@ print(f'Transcriber Version {VERSION}')
 # Parse command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--taskbridgeurl', type=str, action='store', required=True, help='Root URL of the API of the task bridge to use, e.g. https://taskbridge.ai/')
+parser.add_argument('--device', type=str, action='store', required=True, help='Device to use for processing. Can be "cpu" or "cuda"')
 parser.add_argument('--model', type=str, action='store', help='Whisper model size to use. Can be "tiny", "base", "small", "medium", "large-v2" or "large-v3".')
 parser.add_argument('--version', '-v', action='version', version=VERSION)
 parser.add_argument('--worker', type=str, action='store', required=True, help='Unique name of this worker')
@@ -32,6 +32,9 @@ if not TASKBRIDGEURL.endswith("/"):
 APIURL = f"{TASKBRIDGEURL}api/{APIVERSION}/"
 print(f'Using API URL {APIURL}')
 
+DEVICE = args.device
+print(f'Using device {DEVICE}')
+
 MODEL = args.model
 print(f'Using whisper model {MODEL}')
 
@@ -40,8 +43,7 @@ os.makedirs(LOCAL_FILE_PATH, exist_ok=True)
 
 # Load AI
 from faster_whisper import WhisperModel    
-compute_type = 'float16' # if USEGPU else 'int8'
-#device = 'cuda' # if USEGPU else 'cpu'
+compute_type = 'float16' if DEVICE.startswith("cuda") else 'int8'
 whisper_model = WhisperModel( model_size_or_path = MODEL, device = DEVICE, local_files_only = False, compute_type = compute_type, download_root = LOCAL_MODEL_PATH )
 
 def process_file(file_path):
