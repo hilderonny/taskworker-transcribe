@@ -7,9 +7,8 @@ import argparse
 import os
 
 REPOSITORY = "https://github.com/hilderonny/taskworker-transcribe"
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 LIBRARY = "faster-whisper-" + version("faster-whisper")
-APIVERSION = "v2"
 LOCAL_MODEL_PATH = "./models/faster-whisper"
 LOCAL_FILE_PATH = "./temp"
 
@@ -29,7 +28,7 @@ print(f'Worker name: {WORKER}')
 TASKBRIDGEURL = args.taskbridgeurl
 if not TASKBRIDGEURL.endswith("/"):
     TASKBRIDGEURL = f"{TASKBRIDGEURL}/"
-APIURL = f"{TASKBRIDGEURL}api/{APIVERSION}/"
+APIURL = f"{TASKBRIDGEURL}api/"
 print(f'Using API URL {APIURL}')
 
 DEVICE = args.device

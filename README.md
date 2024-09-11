@@ -28,7 +28,7 @@ Worker for taskbridge which can handle tasks of type `transcribe`.
         "device" : "cuda",
         "duration" : 12,
         "repository" : "https://github.com/hilderonny/taskworker-transcribe",
-        "version" : "1.0.0",
+        "version" : "1.1.0",
         "library" : "fasterwhisper-0.8.15",
         "model" : "large-v2"
     }
