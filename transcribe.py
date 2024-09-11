@@ -46,7 +46,6 @@ compute_type = 'float16' if DEVICE.startswith("cuda") else 'int8'
 whisper_model = WhisperModel( model_size_or_path = MODEL, device = DEVICE, local_files_only = False, compute_type = compute_type, download_root = LOCAL_MODEL_PATH )
 
 def process_file(file_path):
-    start_time = datetime.datetime.now()
     result = {}
     try:
         print("Processing file " + file_path)
@@ -57,9 +56,7 @@ def process_file(file_path):
         result["language"] = original_language
         result["texts"] = transcribe_segments
     except Exception as ex:
-        print(ex)
-    end_time = datetime.datetime.now()
-    result["duration"] = (end_time - start_time).total_seconds()
+        result["error"] = str(ex)
     return result
 
 def check_and_process():
