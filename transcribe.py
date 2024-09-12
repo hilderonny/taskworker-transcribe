@@ -54,8 +54,8 @@ def report_progress(taskid, progress):
 def process_file(taskid, file_path):
     result = {}
     try:
-        print("Processing file " + file_path)
-        print("Transcribing")
+        #print("Processing file " + file_path)
+        #print("Transcribing")
         transcribe_segments_generator, transcribe_info = whisper_model.transcribe(file_path, task = "transcribe")
         duration = transcribe_info.duration
         transcribe_segments = []
@@ -67,7 +67,7 @@ def process_file(taskid, file_path):
             }
             transcribe_segments.append(transcribe_segment)
             progress = round(segment.end * 100 / duration)
-            print(f"{progress}% : {transcribe_segment['text']}")
+            #print(f"{progress}% : {transcribe_segment['text']}")
             report_progress(taskid, progress)
         original_language = transcribe_info.language
         result["language"] = original_language
@@ -86,7 +86,7 @@ def check_and_process():
         return False
     task = response.json()
     taskid = task["id"]
-    print(json.dumps(task, indent=2))
+    #print(json.dumps(task, indent=2))
 
     file_response = requests.get(f"{APIURL}tasks/file/{taskid}")
     local_file_path = os.path.join(LOCAL_FILE_PATH, taskid)
@@ -102,11 +102,11 @@ def check_and_process():
     result_to_report["result"]["version"] = VERSION
     result_to_report["result"]["library"] = LIBRARY
     result_to_report["result"]["model"] = MODEL
-    print(json.dumps(result_to_report, indent=2))
-    print("Reporting result")
+    #print(json.dumps(result_to_report, indent=2))
+    #print("Reporting result")
     requests.post(f"{APIURL}tasks/complete/{taskid}/", json=result_to_report)
     os.remove(local_file_path)
-    print("Done")
+    #print("Done")
     return True
 
 try:
