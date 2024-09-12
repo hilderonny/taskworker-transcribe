@@ -45,13 +45,30 @@ from faster_whisper import WhisperModel
 compute_type = 'float16' if DEVICE.startswith("cuda") else 'int8'
 whisper_model = WhisperModel( model_size_or_path = MODEL, device = DEVICE, local_files_only = False, compute_type = compute_type, download_root = LOCAL_MODEL_PATH )
 
-def process_file(file_path):
+def report_progress(taskid, progress):
+    body = {
+        "progress": str(progress)
+    }
+    requests.post(f"{APIURL}tasks/progress/{taskid}/", json=body)
+
+def process_file(taskid, file_path):
     result = {}
     try:
         print("Processing file " + file_path)
         print("Transcribing")
         transcribe_segments_generator, transcribe_info = whisper_model.transcribe(file_path, task = "transcribe")
-        transcribe_segments = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text.strip() }, transcribe_segments_generator))
+        duration = transcribe_info.duration
+        transcribe_segments = []
+        for segment in transcribe_segments_generator:
+            transcribe_segment = {
+                "start": segment.start,
+                "end": segment.end,
+                "text": segment.text.strip()
+            }
+            transcribe_segments.append(transcribe_segment)
+            progress = round(segment.end * 100 / duration)
+            print(f"{progress}% : {transcribe_segment['text']}")
+            report_progress(taskid, progress)
         original_language = transcribe_info.language
         result["language"] = original_language
         result["texts"] = transcribe_segments
@@ -77,7 +94,7 @@ def check_and_process():
         file.write(file_response.content)
 
     result_to_report = {}
-    result_to_report["result"] = process_file(local_file_path)
+    result_to_report["result"] = process_file(taskid, local_file_path)
     end_time = datetime.datetime.now()
     result_to_report["result"]["device"] = DEVICE
     result_to_report["result"]["duration"] = (end_time - start_time).total_seconds()
