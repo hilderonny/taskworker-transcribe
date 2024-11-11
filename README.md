@@ -2,46 +2,49 @@
 
 Worker for taskbridge which can handle tasks of type `transcribe`.
 
-## Task format
+## Result format
+
+When calling the TaskBridge `/api/tasks/complete/:id` API, the following JSON structure is sent to the endpoint.
 
 ```json
 {
-    ...
-    "type" : "transcribe",
-    "worker" : "ROG",
-    "file" : "123456789",
-    ...
-    "result" : {
-        "language" : "en",
-        "texts" : [
-            {
-                "start" : 0.0,
-                "end" : 1.0,
-                "text" : "Line 1"
-            },
-            {
-                "start" : 1.0,
-                "end" : 2.0,
-                "text" : "Line 2"
-            }
-        ],
-        "device" : "cuda",
-        "duration" : 12,
-        "repository" : "https://github.com/hilderonny/taskworker-transcribe",
-        "version" : "1.1.0",
-        "library" : "fasterwhisper-0.8.15",
-        "model" : "large-v2"
-    }
+  "result" : {
+    "language" : "en",
+    "texts" : [
+      {
+        "start" : 0.0,
+        "end" : 1.0,
+        "text" : "Line 1"
+      },
+      {
+        "start" : 1.0,
+        "end" : 2.0,
+        "text" : "Line 2"
+      }
+    ],
+    "device" : "cuda",
+    "duration" : 12,
+    "repository" : "https://github.com/hilderonny/taskworker-transcribe",
+    "version" : "1.1.0",
+    "library" : "fasterwhisper-0.8.15",
+    "model" : "large-v2"
+  }
 }
 ```
 
-The `type` must be `transcribe`.
-
-`worker` contains the unique name of the worker which processed the task.
-
-The worker expects a `file` property defining the filename which contains the audio to transcribe.
-
-When the worker finishes the task, it sends back a `result` property. This property is an object. It contains an array `texts` with the transcribed audio broken into chunks. Each of the elements has the properties `start` and `end` defining at which second in the audio the text chunk started and ended. The result also contains the detected `language`'s 2 digit ISO code.
+|Property|Description|
+|---|---|
+|`language`|Detected langugage in the file depending on the first seconds as 2 digit ISO code|
+|`texts`|Array of detected text chunks. Normally the text is splitted by sentences|
+|`texts.start`|Start second of the chunk|
+|`texts.end`|End second of the chunk|
+|`texts.text`|Text content of the chunk|
+|`device`|`cuda` for GPU processing and `cpu` for CPU processing |
+|`duration`|Time in seconds for the processing|
+|`repository`|Source code repository of the worker|
+|`version`|Version of the worker|
+|`library`|Library used to perform transcription|
+|`model`|AI model used for transcription|
 
 ## Installation on Windows
 
