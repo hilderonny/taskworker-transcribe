@@ -105,6 +105,20 @@ Running the program the first time, ai models with about 4 GB (depending on the 
 python transcribe.py --taskbridgeurl http://192.168.178.39:42000/ --device cuda --worker ROG --model large-v2
 ```
 
+## Docker
+
+There is also a [Docker image](https://hub.docker.com/repository/docker/hilderonny2024/taskworker-transcribe) you can use. It is tested with Docker Desktop on Windows using WSL2.
+
+```sh
+docker run --gpus all -e taskbridgeurl=http://192.168.178.39:42000/ -e worker=ROG -e model=large-v2 hilderonny2024/taskworker-transcribe
+```
+
+The first time you run the application the AI model needs to be downloaded (about 3.5 GB), which can take some time. You can watch the progress by opening a terminal in the docker container and running
+
+```sh
+ls -la /app/models/faster-whisper
+```
+
 ## Literature
 
 1. https://github.com/SYSTRAN/faster-whisper

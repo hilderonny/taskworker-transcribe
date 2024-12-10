@@ -1,6 +1,5 @@
 from importlib.metadata import version
 import time
-import json
 import requests
 import datetime
 import argparse
@@ -86,6 +85,7 @@ def check_and_process():
         return False
     task = response.json()
     taskid = task["id"]
+    print(f'Got new task {taskid}')
     #print(json.dumps(task, indent=2))
 
     file_response = requests.get(f"{APIURL}tasks/file/{taskid}")
@@ -103,7 +103,7 @@ def check_and_process():
     result_to_report["result"]["library"] = LIBRARY
     result_to_report["result"]["model"] = MODEL
     #print(json.dumps(result_to_report, indent=2))
-    #print("Reporting result")
+    print("Reporting result")
     requests.post(f"{APIURL}tasks/complete/{taskid}/", json=result_to_report)
     os.remove(local_file_path)
     #print("Done")
