@@ -64,13 +64,19 @@ Next you need to copy `cudnn_ops_infer64_8.dll`, `cudnn_cnn_infer64_8.dll`, `cub
 ## Installation as service under Linux
 
 ```
-sudo apt install -y git python3.11-env ocl-icd-libopencl1 nvidia-cuda-toolkit nvidia-utils-510-server nvidia-utils-535-server
+sudo ubuntu-drivers --gpgpu install nvidia:535-server
+#wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
+#sudo sh cuda_11.8.0_520.61.05_linux.run
+#sudo apt install -y git python3.11-venv ocl-icd-libopencl1 nvidia-cuda-toolkit nvidia-utils-510-server nvidia-utils-535-server
+sudo apt install -y git python3.11-venv ocl-icd-libopencl1 nvidia-cuda-toolkit nvidia-utils-535-server
 python3.11 -m venv python-venv
 source python-venv/bin/activate
-pip install faster-whisper==0.9.0 nvidia_cublas_cu11==11.11.3.6 nvidia_cudnn_cu11==9.4.0.58
+#pip install faster-whisper==0.9.0 nvidia_cublas_cu11==11.11.3.6 nvidia_cudnn_cu11==9.4.0.58
+#pip install nvidia-cublas-cu12 nvidia-cudnn-cu12==9.* faster-whisper
+pip install nvidia-cublas-cu12==12.8.3.14 nvidia-cudnn-cu12==9.7.1.26 faster-whisper
 ```
 
-Adopt the shell script `translate.sh`to your needs and create SystemD config files (if you want tu run the worker as Linux service).
+Adopt the shell script `translate.sh` to your needs and create SystemD config files (if you want tu run the worker as Linux service).
 
 **/etc/systemd/system/taskworker-transcribe.service**:
 
