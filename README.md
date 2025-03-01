@@ -56,7 +56,7 @@ Next run this command and adopt the parameters to your needs.
 https://docs.docker.com/desktop/features/gpu/
 
 ```sh
-docker run --gpus=all --name taskworker-translate_ROG_LARGE_V2 hilderonny2014/taskworker-transcribe:latest --taskbridgeurl http://192.168.0.2:42000/ --worker ROG_LARGE_V2 --device cuda --model large-v2
+docker run --gpus=all --name taskworker-transcribe_ROG_LARGE_V2 hilderonny2014/taskworker-transcribe:latest --taskbridgeurl http://192.168.0.2:42000/ --worker ROG_LARGE_V2 --device cuda --model large-v2
 ```
 
 On the first run the container needs an internet connection to download the
