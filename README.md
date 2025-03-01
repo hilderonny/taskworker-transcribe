@@ -46,6 +46,44 @@ When calling the TaskBridge `/api/tasks/complete/:id` API, the following JSON st
 |`library`|Library used to perform transcription|
 |`model`|AI model used for transcription|
 
+## Running with docker (recommended)
+
+First install Docker Desktop with WSL2 support.
+After that install the latest GPU driver for your video card if you want GPU support.
+
+Next run this command and adopt the parameters to your needs.
+
+https://docs.docker.com/desktop/features/gpu/
+
+```sh
+docker run --gpus=all --name taskworker-translate_ROG_LARGE_V2 hilderonny2014/taskworker-transcribe:latest --taskbridgeurl http://192.168.0.2:42000/ --worker ROG_LARGE_V2 --device cuda --model large-v2
+```
+
+On the first run the container needs an internet connection to download the
+model (up to 5 GB depending on the model). While downloading the container
+has no output. This can take up some minutes depending on the model but is
+normal.
+
+The order of the parameters is important!
+
+|Parameter|Description|
+|---|---|
+|`--name`|Name the docker container should get while running|
+|`--taskbridgeurl`|The URL of the TaskBridge to use. When the worker is running on the same machine as the TaskBridge, make sure to use the official IP of the host and not 127.0.0.1!|
+|`--worker`|Name of the worker to be shown to the TaskBridge|
+|`--device`|`cuda` for using the GPU, `cpu` otherwise|
+|`--model`|Whisper model to use. Can be one of `tiny`, `base`, `small`, `medium`, `large`, `large-v2` (recommended), `large-v3`, `distil-large-v3`|
+
+|Model|Size|GPU RAM requirement|Remarks|
+|---|---|---|---|
+|tiny|72 MB|400 MB|Not useful for languages other than english|
+|base|139 MB|400 MB||
+|small|462 MB|900 MB||
+|medium|1.4 GB|2.8 GB||
+|large-v2|2.9 GB|4.2 GB|Best quality for multiple languages|
+|large-v3|2.9 GB|4.9 GB|Inaccurate|
+|distil-large-v3|1.4 GB|1.8 GB|Currently only supports english|
+
 ## Installation on Windows
 
 First install Python 3.11.
