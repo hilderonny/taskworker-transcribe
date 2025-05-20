@@ -1,6 +1,6 @@
 # taskworker-transcribe
 
-Worker for taskbridge which can handle tasks of type `transcribe`.
+Worker for [taskbridge](https://github.com/hilderonny/taskbridge) which can handle tasks of type `transcribe`.
 
 ## Result format
 
