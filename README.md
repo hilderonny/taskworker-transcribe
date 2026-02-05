@@ -1,5 +1,7 @@
 # taskworker-transcribe
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hilderonny/taskworker-transcribe)
+
 Worker for [taskbridge](https://github.com/hilderonny/taskbridge) which can handle tasks of type `transcribe`.
 
 ## Result format
