@@ -6,12 +6,12 @@ import argparse
 import os
 
 REPOSITORY = "https://github.com/hilderonny/taskworker-transcribe"
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 LIBRARY = "faster-whisper-" + version("faster-whisper")
 LOCAL_MODEL_PATH = "./models/faster-whisper"
 LOCAL_FILE_PATH = "./temp"
 
-print(f'Transcriber Version {VERSION}')
+print(f'taskworker-transcribe Version {VERSION}')
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
@@ -41,8 +41,7 @@ os.makedirs(LOCAL_FILE_PATH, exist_ok=True)
 
 # Load AI
 from faster_whisper import WhisperModel    
-compute_type = 'float16' if DEVICE.startswith("cuda") else 'int8'
-whisper_model = WhisperModel( model_size_or_path = MODEL, device = DEVICE, local_files_only = False, compute_type = compute_type, download_root = LOCAL_MODEL_PATH )
+whisper_model = WhisperModel( model_size_or_path = MODEL, device = "CUDA", local_files_only = True, compute_type = "float16", download_root = LOCAL_MODEL_PATH )
 
 def report_progress(taskid, progress):
     body = {

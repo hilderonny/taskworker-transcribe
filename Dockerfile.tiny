@@ -1,0 +1,38 @@
+FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN apt update
+RUN apt install -y python3.11
+RUN apt install -y python3-pip
+RUN apt install -y nvidia-cuda-toolkit
+RUN apt install -y nvidia-utils-510-server
+RUN apt install -y nvidia-utils-535-server
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir nvidia-cublas-cu12==12.9.1.4
+RUN pip3 install --no-cache-dir nvidia-cudnn-cu12==9.20.0.48
+RUN pip3 install --no-cache-dir faster-whisper==1.2.1
+RUN pip3 install --no-cache-dir requests==2.32.5
+
+COPY bash.bashrc /etc
+COPY download.py /app
+COPY transcribe.py /app
+
+# Download model to be included in Docker image
+RUN python3 -u download.py --model tiny
+
+ENV taskbridgeurl=http://127.0.0.1:42000/
+ENV worker=DOCKER-TRANSCRIBE-TINY
+
+CMD [ "bash" , "-c", "python3 -u transcribe.py --taskbridgeurl ${taskbridgeurl} --worker ${worker} --device cuda --model tiny" ]
+
+# Building
+# docker build -f Dockerfile.tiny -t hilderonny2024/taskworker-transcribe:tiny .
+# docker login
+# docker tag hilderonny2024/taskworker-transcribe:tiny 192.168.0.152:42001/hilderonny2024/taskworker-transcribe:tiny
+# docker push hilderonny2024/taskworker-transcribe:tiny
+# docker push 192.168.0.152:42001/hilderonny2024/taskworker-transcribe:tiny
