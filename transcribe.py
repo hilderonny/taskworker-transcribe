@@ -1,17 +1,18 @@
 from importlib.metadata import version
 import time
+import json
 import requests
 import datetime
 import argparse
 import os
 
 REPOSITORY = "https://github.com/hilderonny/taskworker-transcribe"
-VERSION = "1.1.1"
+VERSION = "1.1.0"
 LIBRARY = "faster-whisper-" + version("faster-whisper")
 LOCAL_MODEL_PATH = "./models/faster-whisper"
 LOCAL_FILE_PATH = "./temp"
 
-print(f'taskworker-transcribe Version {VERSION}')
+print(f'Transcriber Version {VERSION}')
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
@@ -41,7 +42,8 @@ os.makedirs(LOCAL_FILE_PATH, exist_ok=True)
 
 # Load AI
 from faster_whisper import WhisperModel    
-whisper_model = WhisperModel( model_size_or_path = MODEL, device = "CUDA", local_files_only = True, compute_type = "float16", download_root = LOCAL_MODEL_PATH )
+compute_type = 'float16' if DEVICE.startswith("cuda") else 'int8'
+whisper_model = WhisperModel( model_size_or_path = MODEL, device = DEVICE, local_files_only = False, compute_type = compute_type, download_root = LOCAL_MODEL_PATH )
 
 def report_progress(taskid, progress):
     body = {
@@ -84,7 +86,6 @@ def check_and_process():
         return False
     task = response.json()
     taskid = task["id"]
-    print(f'Got new task {taskid}')
     #print(json.dumps(task, indent=2))
 
     file_response = requests.get(f"{APIURL}tasks/file/{taskid}")
@@ -102,7 +103,7 @@ def check_and_process():
     result_to_report["result"]["library"] = LIBRARY
     result_to_report["result"]["model"] = MODEL
     #print(json.dumps(result_to_report, indent=2))
-    print("Reporting result")
+    #print("Reporting result")
     requests.post(f"{APIURL}tasks/complete/{taskid}/", json=result_to_report)
     os.remove(local_file_path)
     #print("Done")
